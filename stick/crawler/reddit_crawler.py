@@ -24,7 +24,7 @@ logging.basicConfig(
                     level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(message)s",
                     handlers=[
-                        logging.FileHandler(f"{os.getcwd()}/logs/{datetime.now()}-reddit.log"),
+                        logging.FileHandler(f"{os.getcwd()}/logs/{datetime.now()}-reddit_crawler.log"),
                         logging.StreamHandler(sys.stdout)
                         ]
                     )
@@ -32,7 +32,7 @@ logging.basicConfig(
 sheaf_logger = logging.getLogger(__name__)
 
 CURRENT_PATH = os.getcwd()
-CHROME_DRIVER_PATH = f"{os.getcwd()}/utils/chromedriver"
+CHROME_DRIVER_PATH = f"{CURRENT_PATH}/utils/chromedriver"
 ADBLOCK = '/home/sezai/.config/google-chrome/Default/Extensions/gighmmpiobklfepjocnamgkkbiglidom/'
 
 # TODO: READ FROM CONFIG FILE 
