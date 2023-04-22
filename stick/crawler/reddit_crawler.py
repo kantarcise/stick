@@ -1,8 +1,10 @@
+"""
+This script crawls Reddit and fetches popular comments on posts.
+"""
+
 # TODO: Config file relative import ?
 # TODO: DATABASE
-# TODO: comment json path
 # TODO: all data to links folder
-# TODO: setup sparknlp
 
 import sys
 import logging

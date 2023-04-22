@@ -1,0 +1,1 @@
+This folder will contain the raw data after the execution.

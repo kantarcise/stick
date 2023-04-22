@@ -1,0 +1,6 @@
+notebook.md
+data/comments/*.json
+data/raw/*.csv
+logs/
+logs/*.log
+*.log
