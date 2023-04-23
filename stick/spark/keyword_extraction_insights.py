@@ -224,11 +224,14 @@ class KeywordExtractionInsight():
 
 # For Airflow PythonOperator
 def nlp_etl_prime():
+    stick_logger.info("Keyword Extraction and Insight Reporter is starting..")
     robot = KeywordExtractionInsight()
     robot.setup_data()
     robot.keyword_pipeline()
     robot.sentiment_pipeline()
     robot.report_results()
+    stick_logger.info(f"Finished running..")
+
 
 if __name__ == "__main__":
     nlp_etl_prime()
