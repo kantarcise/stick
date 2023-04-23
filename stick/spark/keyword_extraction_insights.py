@@ -41,16 +41,19 @@ today_specific = date.today().strftime("%d_%m_%y")
 class KeywordExtractionInsight():
     """ This class 
     """
-    
     def __init__(self,):        
-        self.spark = sparknlp.start()
-        stick_logger.info("Spark NLP is starting..")
-        stick_logger.info(f"Spark NLP version {sparknlp.version()}", )
-        stick_logger.info(f"Apache Spark version: {self.spark.version}")
-        self.input_json_path = f"{CURRENT_PATH}/data/comments/{today_specific}_reddit.json"
-        self.output_csv_path = f"{CURRENT_PATH}/data/comments/{today_specific}_reddit_to_pipeline.csv"
-        self.results_csv_path = f"{CURRENT_PATH}/results/{today_specific}_results_reddit.csv"
-        
+        try:
+            self.spark = sparknlp.start()
+            stick_logger.info("Spark NLP is starting..")
+            stick_logger.info(f"Spark NLP version {sparknlp.version()}", )
+            stick_logger.info(f"Apache Spark version: {self.spark.version}")
+            self.input_json_path = f"{CURRENT_PATH}/data/comments/{today_specific}_reddit.json"
+            self.output_csv_path = f"{CURRENT_PATH}/data/comments/{today_specific}_reddit_to_pipeline.csv"
+            self.results_csv_path = f"{CURRENT_PATH}/results/{today_specific}_results_reddit.csv"
+            stick_logger.info("All file paths are set.")
+        except:
+            stick_logger.exception("Could not initiate KeywordExtractionInsight object.")
+
     def __repr__(self) -> str:
         pass
 
@@ -86,10 +89,12 @@ class KeywordExtractionInsight():
                     f.write(",")
                     f.write(big_string)
                     f.write("\n")
+        stick_logger.info("The data is ready to be used by spark.")
 
     def keyword_pipeline(self, ):
-        
-        # First pipeline, Yake
+        """ This method finds the keywords from all the comments extracted.
+        """
+        # First pipeline, YakeKEywordExtraction
 
         stopwords = StopWordsCleaner().getStopWords()
 
@@ -122,27 +127,34 @@ class KeywordExtractionInsight():
         self.df = self.spark.read\
             .option("header", "true")\
             .csv(self.output_csv_path)\
-            
+
+        stick_logger.info(f"File succesfully read from {self.output_csv_path}.")
+
         # Clean up the df in case there was a new line in the csv            
         self.df = self.df.filter(F.col("link").contains("old.reddit"))
 
+        # Will need the links later.
         self.links_df = self.df.select("link")
+        
         self.contents_df = self.df.select("text")
-
         self.keywords_result = yake_pipeline.fit(self.contents_df).transform(self.contents_df)
         self.keywords_result = self.keywords_result.withColumn('unique_keywords', F.array_distinct("keywords.result"))
 
         # Make the array of keywords into a string seperated with comma.
         self.keywords_as_strings = self.keywords_result.select("unique_keywords").withColumn("unique_keywords", concat_ws("," , "unique_keywords")).withColumnRenamed("unique_keywords", "unique_keywords_string")
-        print("\n Here are the keywords from the content, in a string seperated with comma \n")
-        self.keywords_as_strings.show(truncate= False)
+        # You can uncomment folowing line to see the list of keywords
+        # self.keywords_as_strings.show(truncate= False)
 
         # TODO: Not used. We need to evaluate the success of this DataFrame too.
         self.keywords_single_string = self.keywords_result.select(F.expr("unique_keywords[0]")).withColumnRenamed("unique_keywords[0]", "unique_keywords_string")
         
+        stick_logger.info("Data succesfully flow from Yake Pipeline.")
+
         pass
 
     def sentiment_pipeline(self,):
+        """This method uses the keyword DataFrame and decides whether or not there is a positive sentiment, therefore attention on them
+        """
         
         # Second Pipeline, Sentiment analysis from those keywords
         documentAssembler = DocumentAssembler() \
@@ -175,7 +187,7 @@ class KeywordExtractionInsight():
 
         self.sentiment_result = pipeline.fit(self.keywords_as_strings).transform(self.keywords_as_strings)
 
-        # This result is in an array, so before casting we can make it a string,
+        # This result (sentimentScore) is in an array, so before casting we can make it a string,
         self.sentiment_result_cleaned = self.sentiment_result.select("sentimentScore.result") \
                                                 .withColumn("result", concat_ws("," , "result"))
         self.sentiment_result_double = self.sentiment_result_cleaned.selectExpr("cast(result as double) result") \
@@ -186,10 +198,13 @@ class KeywordExtractionInsight():
         # second_result.select("sentimentScore").show(100, truncate= False)
         # sentiment_result.selectExpr("sentimentScore.result").show(100, truncate=False)
 
+        stick_logger.info("Data succesfully flow from SentimentAnalysis Pipeline.")
+
         pass
 
     def report_results(self,):
-        
+        """This method reports the results of sentiment analysis and exctracted links.
+        """
         # Join the links df and the results, with a simple index
         self.links_df_indexed = self.links_df.select("*").withColumn("id1", F.monotonically_increasing_id())
         self.sentiment_result_indexed = self.sentiment_result_double.select("*").withColumn("id2", F.monotonically_increasing_id())
@@ -204,7 +219,7 @@ class KeywordExtractionInsight():
         # Save the results.
         self.joined_cleaned_result.write.mode("overwrite").option("header", "true")\
                                    .csv(self.results_csv_path)
-        
+        stick_logger.info(f"Results are saved to {self.results_csv_path}")
         pass
 
 # For Airflow PythonOperator
