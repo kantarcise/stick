@@ -3,8 +3,8 @@ This script crawls Reddit and fetches popular comments on posts.
 """
 
 # TODO: Config file relative import ?
-# TODO: DATABASE
-# TODO: all data to links folder
+# TODO: DATABASE - Not Connected, do we really need it?
+# TODO: Updated subreddits. --- https://www.reddit.com/best/communities/1/
 
 import sys
 import logging
@@ -29,7 +29,7 @@ logging.basicConfig(
                         ]
                     )
 
-sheaf_logger = logging.getLogger(__name__)
+stick_logger = logging.getLogger(__name__)
 
 CURRENT_PATH = os.getcwd()
 CHROME_DRIVER_PATH = f"{CURRENT_PATH}/utils/chromedriver"
@@ -60,10 +60,12 @@ class RedditCrawler():
             self.data_path = CURRENT_PATH + "/data/raw/" + self.today_specific + "_reddit_data.csv"
             self.content_dict = {}
             # Subreddits to check
-            self.subreddits = ["memes", "gaming", "lol", "pics", "food", "funny", "coolcollections"]        
-            sheaf_logger.info("All variables setup, connecting to database...")
+            self.subreddits = ["memes", "gaming", "lol", "pics", "food", "funny", "Damnthatsinteresting", 
+                                "interestingasfuck", "technology", "clevercomebacks", "videos", "space", 
+                                "aww","Art" , "gifs", "InternetIsBeautiful", "travel"]        
+            stick_logger.info("All variables setup, connecting to database...")
         except:
-            sheaf_logger.exception("Could not initialize Reddit Crawler. Please check the project structure.")
+            stick_logger.exception("Could not initialize Reddit Crawler. Please check the project structure.")
 
         # Database Connection
         try:
@@ -71,9 +73,9 @@ class RedditCrawler():
             self.cursor = self.pg_conn.cursor()
             #self.cursor.execute('DROP DATABASE IF EXISTS python_db')
             #self.cursor.execute('CREATE DATABASE python_db')
-            sheaf_logger.info("Connected to the database")
+            stick_logger.info("Connected to the database")
         except: 
-            sheaf_logger.exception("Could not connect to the database.")
+            stick_logger.exception("Could not connect to the database.")
         
     def setup(self):
         """ This method opens up a new instance of Chrome and fetches all the popular content for chosen subreddit into a csv.
@@ -88,7 +90,7 @@ class RedditCrawler():
         driver.switch_to.window(driver.window_handles[-1])
 
         for x in range(len(self.subreddits)):
-            sheaf_logger.info(f"Starting to look data from {self.subreddits[x]}")
+            stick_logger.info(f"Starting to look data from {self.subreddits[x]}")
 
             # First subreddit
             driver.get("https://old.reddit.com/r/" + self.subreddits[x])
@@ -112,21 +114,24 @@ class RedditCrawler():
             
             # Put all the content into a list
             self.content_list.append(content_list) 
-            sheaf_logger.info(self.content_list)               
+            # You can uncomment this if you want to see the content logged in terminal.
+            stick_logger.info(self.content_list)               
             
             # For the selected subreddit, add all the content with its key to the dictionary.
             self.content_dict.update( {self.subreddits[x]: content_list})
             driver.implicitly_wait(1)
 
-            sheaf_logger.info(f"Ended process for, r/{self.subreddits[x]} subreddit!")
+            stick_logger.info(f"Ended process for, r/{self.subreddits[x]} subreddit!")
             
         driver.implicitly_wait(3)
         # Make a dataframe from the dictionary.
         data = pd.DataFrame.from_dict(self.content_dict, orient='index')
         # Save the dictionary as a CSV
         data.to_csv(self.data_path)
+        stick_logger.info(f"Saved all the data from {self.subreddits} into {self.data_path}")
 
-    def get_best_comments(self):
+
+    def get_best_comments(self, number_of_comments_to_be_saved = 8):
         
         __subreddits_dict = {}
 
@@ -143,13 +148,14 @@ class RedditCrawler():
         
         # Initialize Chrome
         driver = webdriver.Chrome(options = self.options, executable_path= CHROME_DRIVER_PATH)
+        # Give time to initialize Ad Blocker popup to load.
         time.sleep(2)
         driver.close()
         driver.switch_to.window(driver.window_handles[-1])
 
         # Need a loop for every subreddit.
         for index, subreddit in enumerate(self.subreddits):
-            sheaf_logger.info(f"Starting to look at the data from r/{subreddit}")
+            stick_logger.info(f"Starting to look at the data from r/{subreddit}")
 
             # Get the link list
             __link_list  = [ x for x in __urls_dataframe[subreddit].to_list() if pd.isnull(x) == False ]
@@ -164,18 +170,20 @@ class RedditCrawler():
                 driver.implicitly_wait(1)
 
                 __subreddits_dict[subreddit][link+"?sort=top"] = []
-                # Check for best top 10 comments within that link, one by one.
-                for i in range(1,17,2):
+                # Check for best top 8 comments within that link, one by one.
+                for i in range(1,((number_of_comments_to_be_saved * 2) + 1 ),2):
                     try:
                         configured_base_xpath = __base_xpath[:36] + str(i) + __base_xpath[37:]
                         comment = driver.find_element(By.XPATH, configured_base_xpath).text
                         __subreddits_dict[subreddit][link+"?sort=top"].append(comment)
                     except Exception as e:
                         print(f"The comment that you are looking for is not here!")
+                        # No need to look for the comments anymore.
+                        break
 
-                sheaf_logger.info(f"Ended checking comments for, r/{link} subreddit!")
+                stick_logger.info(f"Ended checking comments for, r/{link}")
                 
-            sheaf_logger.info(f"Ended process for the subreddit: {subreddit}")
+            stick_logger.info(f"Ended process for the subreddit: {subreddit}")
 
         driver.implicitly_wait(3)
         driver.close()
@@ -183,15 +191,18 @@ class RedditCrawler():
         with open(f"{CURRENT_PATH}/data/comments/{self.today_specific}_reddit.json", "w+") as outfile:
             json.dump(__subreddits_dict,outfile)
 
+        stick_logger.info(f"Saved all the valuable content to :{CURRENT_PATH}/data/comments/{self.today_specific}_reddit.json")
+
+# This is mainly for Airflow's PythonOperator.
 def prime():
-    sheaf_logger.info("Reddit Crawler is Starting!")
+    stick_logger.info("Reddit Crawler is Starting!")
     Crawler = RedditCrawler()
-    sheaf_logger.info("Seaching the frontpage of the internet!")
+    stick_logger.info("Seaching the frontpage of the internet!")
     Crawler.setup()
-    sheaf_logger.info("Getting the best comments!")
-    Crawler.get_best_comments()
-    sheaf_logger.info("Successfully fetched data!")
-    sheaf_logger.info("Bye!")
+    stick_logger.info("Getting the best comments!")
+    Crawler.get_best_comments(number_of_comments_to_be_saved = 8)
+    stick_logger.info("Successfully fetched data!")
+    stick_logger.info("Bye!")
 
 if __name__ == "__main__":
     prime()
