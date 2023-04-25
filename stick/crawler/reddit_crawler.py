@@ -16,7 +16,8 @@ import time
 import pandas as pd
 import os
 from datetime import date, datetime
-import psycopg2
+# Not used
+#import psycopg2
 import json
 
 # Logger
@@ -69,11 +70,13 @@ class RedditCrawler():
 
         # Database Connection
         try:
-            self.pg_conn = psycopg2.connect(database = "reddit", user = "admin", password = "admin", host = "localhost" , port = "5432" )
-            self.cursor = self.pg_conn.cursor()
-            #self.cursor.execute('DROP DATABASE IF EXISTS python_db')
-            #self.cursor.execute('CREATE DATABASE python_db')
-            stick_logger.info("Connected to the database")
+            # For now no dbs.
+            # self.pg_conn = psycopg2.connect(database = "reddit", user = "admin", password = "admin", host = "localhost" , port = "5432" )
+            # self.cursor = self.pg_conn.cursor()
+            # self.cursor.execute('DROP DATABASE IF EXISTS python_db')
+            # self.cursor.execute('CREATE DATABASE python_db')
+            # stick_logger.info("Connected to the database")
+            pass
         except: 
             stick_logger.exception("Could not connect to the database.")
         
@@ -134,6 +137,8 @@ class RedditCrawler():
     def get_best_comments(self, number_of_comments_to_be_saved = 8):
         
         __subreddits_dict = {}
+        __comment_counter = 0
+
 
         # Read the URL's from csv.
         __urls_dataframe = pd.read_csv(self.data_path)
@@ -176,9 +181,10 @@ class RedditCrawler():
                         configured_base_xpath = __base_xpath[:36] + str(i) + __base_xpath[37:]
                         comment = driver.find_element(By.XPATH, configured_base_xpath).text
                         __subreddits_dict[subreddit][link+"?sort=top"].append(comment)
+                        __comment_counter = __comment_counter + 1
                     except Exception as e:
                         print(f"The comment that you are looking for is not here!")
-                        # No need to look for the comments anymore.
+                        # No need to look for the comments in that link anymore.
                         break
 
                 stick_logger.info(f"Ended checking comments for, r/{link}")
@@ -190,7 +196,8 @@ class RedditCrawler():
 
         with open(f"{CURRENT_PATH}/data/comments/{self.today_specific}_reddit.json", "w+") as outfile:
             json.dump(__subreddits_dict,outfile)
-
+        
+        stick_logger.info(f"Total comments looked up is : {__comment_counter}")
         stick_logger.info(f"Saved all the valuable content to :{CURRENT_PATH}/data/comments/{self.today_specific}_reddit.json")
 
 # This is mainly for Airflow's PythonOperator.
