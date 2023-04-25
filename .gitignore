@@ -2,7 +2,6 @@ notebook.md
 data/comments/*.json
 data/comments/*.csv
 data/raw/*.csv
-logs/
 temp/
 logs/*.log
 *.log
