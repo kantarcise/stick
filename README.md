@@ -27,7 +27,8 @@ $ pip install -r requirements.txt
 
 For a fresh installation, we will need a specific version of Chrome and AdBlocker Extension. Luckily, they are pretty straightforward to setup.
 
-```wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_103.0.5060.53-1_amd64.deb \
+```
+wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_103.0.5060.53-1_amd64.deb \
   && apt install -y /tmp/chrome.deb \
   && rm /tmp/chrome.deb
 ```
@@ -41,6 +42,7 @@ $ sudo apt-get install openjdk-8-jdk
 
 # Confirm your installation
 $ java --version
+
 ```
 
 After java installation, you can setup the [java path on bashrc](https://stackoverflow.com/a/9612986).
@@ -49,10 +51,13 @@ After java installation, you can setup the [java path on bashrc](https://stackov
 $ sudo nano ~/.bashrc
 
 # To end of the file add the following
+
 # >>> Java Setup >>>
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
 export PATH=$JAVA_HOME/bin:$PATH
 # <<< Java Setup <<<
+
+# Save and close the bashrc file
 
 # Apply changes
 $ source ~/.bashrc
