@@ -25,6 +25,40 @@ $ conda create --name <MY_ENVIRONMENT> python==3.8.12
 $ pip install -r requirements.txt
 ```
 
+For a fresh installation, we will need a specific version of Chrome and AdBlocker Extension. Luckily, they are pretty straightforward to setup.
+
+```wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_103.0.5060.53-1_amd64.deb \
+  && apt install -y /tmp/chrome.deb \
+  && rm /tmp/chrome.deb
+```
+
+After this step, simply open Chrome and install [AdBlocker](https://chrome.google.com/webstore/detail/adblock-%E2%80%94-best-ad-blocker/gighmmpiobklfepjocnamgkkbiglidom) from extensions.
+
+As we use Apache Spark and Spark NLP, we are going to need JAVA to be installed aswell. You can look it up online or simply:
+
+```
+$ sudo apt-get install openjdk-8-jdk
+
+# Confirm your installation
+$ java --version
+```
+
+After java installation, you can setup the [java path on bashrc](https://stackoverflow.com/a/9612986).
+
+```
+$ sudo nano ~/.bashrc
+
+# To end of the file add the following
+# >>> Java Setup >>>
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+# <<< Java Setup <<<
+
+# Apply changes
+$ source ~/.bashrc
+
+```
+
 ## Usage
 
 Although it's meant to be orchestrated and run automatically, here are set of commands you can use to run stick manually on Ubuntu PC.
