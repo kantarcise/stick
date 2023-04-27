@@ -207,7 +207,7 @@ def prime():
     stick_logger.info("Reddit Crawler is Starting!")
     Crawler = RedditCrawler()
     stick_logger.info("Seaching the frontpage of the internet!")
-    # Crawler.setup()
+    Crawler.setup()
     stick_logger.info("Getting the best comments!")
     Crawler.get_best_comments(number_of_comments_to_be_saved = 8)
     stick_logger.info("Successfully fetched data!")
