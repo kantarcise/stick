@@ -91,6 +91,7 @@ class RedditCrawler():
         time.sleep(2)
         driver.close()
         driver.switch_to.window(driver.window_handles[-1])
+        driver.minimize_window()
 
         for x in range(len(self.subreddits)):
             stick_logger.info(f"Starting to look data from {self.subreddits[x]}")
@@ -139,7 +140,6 @@ class RedditCrawler():
         __subreddits_dict = {}
         __comment_counter = 0
 
-
         # Read the URL's from csv.
         __urls_dataframe = pd.read_csv(self.data_path)
         __urls_dataframe = __urls_dataframe.transpose()
@@ -157,6 +157,8 @@ class RedditCrawler():
         time.sleep(2)
         driver.close()
         driver.switch_to.window(driver.window_handles[-1])
+        driver.minimize_window()
+
 
         # Need a loop for every subreddit.
         for index, subreddit in enumerate(self.subreddits):
@@ -205,7 +207,7 @@ def prime():
     stick_logger.info("Reddit Crawler is Starting!")
     Crawler = RedditCrawler()
     stick_logger.info("Seaching the frontpage of the internet!")
-    Crawler.setup()
+    # Crawler.setup()
     stick_logger.info("Getting the best comments!")
     Crawler.get_best_comments(number_of_comments_to_be_saved = 8)
     stick_logger.info("Successfully fetched data!")
