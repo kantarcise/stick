@@ -1,6 +1,5 @@
 """
 This script crawls Reddit and fetches popular comments on posts.
-You can change the amount of data exctracted from the get_best_comments method.
 """
 
 # TODO: Config file relative import ?
@@ -21,27 +20,27 @@ from datetime import date, datetime
 #import psycopg2
 import json
 
+project_root = f"{os.path.expanduser('~')}/repositories/stick"
+
 # Logger
 logging.basicConfig(
                     level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(message)s",
                     handlers=[
-                        logging.FileHandler(f"{os.getcwd()}/logs/{datetime.now()}-reddit_crawler.log"),
+                        logging.FileHandler(f"{project_root}/logs/{datetime.now()}-reddit_crawler.log"),
                         logging.StreamHandler(sys.stdout)
                         ]
                     )
 
 stick_logger = logging.getLogger(__name__)
 
-CURRENT_PATH = os.getcwd()
+CURRENT_PATH = project_root
 CHROME_DRIVER_PATH = f"{CURRENT_PATH}/utils/chromedriver"
-ADBLOCK = '/home/sezai/.config/google-chrome/Default/Extensions/gighmmpiobklfepjocnamgkkbiglidom/'
+ADBLOCK = f"{os.path.expanduser('~')}/.config/google-chrome/Default/Extensions/gighmmpiobklfepjocnamgkkbiglidom/"
 
 # TODO: READ FROM CONFIG FILE 
 # Configuration = ConfigFile()
-
 # CONN_STRING = "postgres://" + Configuration.get_username() + ":" + Configuration.get_password() + "@" + Configuration.get_host() + "/" + Configuration.get_port()
-CONN_STRING = "postgresql://" + "admin" + ":" + "admin" + "@" + "localhost"+ ":" + "5432"+ "/" + "reddit"
 
 class RedditCrawler():
     """ This class is used for fetching data from Reddit, the front page of the Internet!
@@ -71,19 +70,15 @@ class RedditCrawler():
 
         # Database Connection
         try:
-            # For now, no database needed.
-            # self.pg_conn = psycopg2.connect(...)
+            # For now no dbs.
+            # self.pg_conn = psycopg2.connect(database = "reddit", user = "admin", password = "admin", host = "localhost" , port = "5432" )
             # self.cursor = self.pg_conn.cursor()
+            # self.cursor.execute('DROP DATABASE IF EXISTS python_db')
+            # self.cursor.execute('CREATE DATABASE python_db')
             # stick_logger.info("Connected to the database")
             pass
         except: 
             stick_logger.exception("Could not connect to the database.")
-        
-    def __repr__(self,):
-        return (f"A {self.__class__.__name__} class built on Selenium and Chrome Version 103.0.5060.53-1")
-
-    def __str__(self,) -> str:
-        return F" This is a {self.__class__.__name__} Spider for best subreddits in the world!"
         
     def setup(self):
         """ This method opens up a new instance of Chrome and fetches all the popular content for chosen subreddit into a csv.
@@ -140,8 +135,7 @@ class RedditCrawler():
         stick_logger.info(f"Saved all the data from {self.subreddits} into {self.data_path}")
 
     def get_best_comments(self, number_of_comments_to_be_saved = 8):
-        """ From all the links fetched, save the most upvoted comments
-        """
+        
         __subreddits_dict = {}
         __comment_counter = 0
 
@@ -217,6 +211,9 @@ def prime():
     Crawler.get_best_comments(number_of_comments_to_be_saved = 8)
     stick_logger.info("Successfully fetched data!")
     stick_logger.info("Bye!")
+
+def dummy():
+    pass
 
 if __name__ == "__main__":
     prime()
