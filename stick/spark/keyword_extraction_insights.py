@@ -8,8 +8,6 @@ are positive, we save the URL and the result to a csv to be reported to the desi
 
 """
 
-# TODO: Setup proper logs.
-
 from pyspark.sql import functions as F
 from pyspark.ml import Pipeline
 from pyspark.sql.functions import concat_ws
@@ -39,7 +37,7 @@ CURRENT_PATH = os.getcwd()
 today_specific = date.today().strftime("%d_%m_%y")
 
 class KeywordExtractionInsight():
-    """ This class 
+    """ This class is made to extract value from the content where the most positive attention exists.
     """
     def __init__(self,):        
         try:
@@ -54,11 +52,12 @@ class KeywordExtractionInsight():
         except:
             stick_logger.exception("Could not initiate KeywordExtractionInsight object.")
 
-    def __repr__(self) -> str:
-        pass
+    def __repr__(self,):
+        return (f"A {self.__class__.__name__} class with Spark Version: {self.spark.version} and Spark NLP: {sparknlp.version()} \
+            that contains YAKE and SentimentDetector pipelines.")
 
-    def __str__(self) -> str:
-        pass
+    def __str__(self,) -> str:
+        return F" This is a {self.__class__.__name__} NLP analyzer!"
 
     def setup_data(self):
     
@@ -94,7 +93,7 @@ class KeywordExtractionInsight():
     def keyword_pipeline(self, ):
         """ This method finds the keywords from all the comments extracted.
         """
-        # First pipeline, YakeKEywordExtraction
+        # First pipeline, YakeKeywordExtraction
 
         stopwords = StopWordsCleaner().getStopWords()
 
@@ -155,7 +154,6 @@ class KeywordExtractionInsight():
     def sentiment_pipeline(self,):
         """This method uses the keyword DataFrame and decides whether or not there is a positive sentiment, therefore attention on them
         """
-        
         # Second Pipeline, Sentiment analysis from those keywords
         documentAssembler = DocumentAssembler() \
             .setInputCol("unique_keywords_string") \
@@ -171,6 +169,7 @@ class KeywordExtractionInsight():
             .setDictionary(f"{CURRENT_PATH}/content/lemmas_small.txt", "->", "\t")
 
         # If you don't specify EnableScore, the result will be positive or negative, which is not helpful (as 0 is positive on default)
+        # The sentiment txt is manually made, thanks to: https://gist.github.com/mkulakowski2/4289437 and https://gist.github.com/mkulakowski2/4289441
         sentimentDetector = SentimentDetector() \
             .setInputCols(["lemma", "document"]) \
             .setOutputCol("sentimentScore") \
@@ -183,7 +182,6 @@ class KeywordExtractionInsight():
             lemmatizer,
             sentimentDetector,
         ])
-
 
         self.sentiment_result = pipeline.fit(self.keywords_as_strings).transform(self.keywords_as_strings)
 

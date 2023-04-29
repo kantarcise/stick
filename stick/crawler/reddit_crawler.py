@@ -1,5 +1,6 @@
 """
 This script crawls Reddit and fetches popular comments on posts.
+You can change the amount of data exctracted from the get_best_comments method.
 """
 
 # TODO: Config file relative import ?
@@ -70,15 +71,19 @@ class RedditCrawler():
 
         # Database Connection
         try:
-            # For now no dbs.
-            # self.pg_conn = psycopg2.connect(database = "reddit", user = "admin", password = "admin", host = "localhost" , port = "5432" )
+            # For now, no database needed.
+            # self.pg_conn = psycopg2.connect(...)
             # self.cursor = self.pg_conn.cursor()
-            # self.cursor.execute('DROP DATABASE IF EXISTS python_db')
-            # self.cursor.execute('CREATE DATABASE python_db')
             # stick_logger.info("Connected to the database")
             pass
         except: 
             stick_logger.exception("Could not connect to the database.")
+        
+    def __repr__(self,):
+        return (f"A {self.__class__.__name__} class built on Selenium and Chrome Version 103.0.5060.53-1")
+
+    def __str__(self,) -> str:
+        return F" This is a {self.__class__.__name__} Spider for best subreddits in the world!"
         
     def setup(self):
         """ This method opens up a new instance of Chrome and fetches all the popular content for chosen subreddit into a csv.
@@ -134,9 +139,9 @@ class RedditCrawler():
         data.to_csv(self.data_path)
         stick_logger.info(f"Saved all the data from {self.subreddits} into {self.data_path}")
 
-
     def get_best_comments(self, number_of_comments_to_be_saved = 8):
-        
+        """ From all the links fetched, save the most upvoted comments
+        """
         __subreddits_dict = {}
         __comment_counter = 0
 
