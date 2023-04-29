@@ -5,3 +5,4 @@ data/raw/*.csv
 temp/
 logs/*.log
 *.log
+*.pyc
