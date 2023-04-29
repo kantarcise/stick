@@ -23,7 +23,7 @@ import os
 from datetime import date, datetime
 import logging
 
-project_root = f"{os.path.expanduser('~')}/repositories/stick"
+project_root = os.path.abspath(__file__ + "/../../..")
 
 # Logger
 logging.basicConfig(
@@ -36,8 +36,6 @@ logging.basicConfig(
                     )
 
 stick_logger = logging.getLogger(__name__)
-
-CURRENT_PATH = project_root
 today_specific = date.today().strftime("%d_%m_%y")
 
 class KeywordExtractionInsight():
@@ -49,9 +47,9 @@ class KeywordExtractionInsight():
             stick_logger.info("Spark NLP is starting..")
             stick_logger.info(f"Spark NLP version {sparknlp.version()}", )
             stick_logger.info(f"Apache Spark version: {self.spark.version}")
-            self.input_json_path = f"{CURRENT_PATH}/data/comments/{today_specific}_reddit.json"
-            self.output_csv_path = f"{CURRENT_PATH}/data/comments/{today_specific}_reddit_to_pipeline.csv"
-            self.results_csv_path = f"{CURRENT_PATH}/results/{today_specific}_results_reddit.csv"
+            self.input_json_path = f"{project_root}/data/comments/{today_specific}_reddit.json"
+            self.output_csv_path = f"{project_root}/data/comments/{today_specific}_reddit_to_pipeline.csv"
+            self.results_csv_path = f"{project_root}/results/{today_specific}_results_reddit.csv"
             stick_logger.info("All file paths are set.")
         except:
             stick_logger.exception("Could not initiate KeywordExtractionInsight object.")
@@ -170,14 +168,14 @@ class KeywordExtractionInsight():
         lemmatizer = Lemmatizer() \
             .setInputCols(["token"]) \
             .setOutputCol("lemma") \
-            .setDictionary(f"{CURRENT_PATH}/content/lemmas_small.txt", "->", "\t")
+            .setDictionary(f"{project_root}/content/lemmas_small.txt", "->", "\t")
 
         # If you don't specify EnableScore, the result will be positive or negative, which is not helpful (as 0 is positive on default)
         sentimentDetector = SentimentDetector() \
             .setInputCols(["lemma", "document"]) \
             .setOutputCol("sentimentScore") \
             .setEnableScore(True) \
-            .setDictionary(f"{CURRENT_PATH}/content/sentiment-dict.txt", ",", ReadAs.TEXT)
+            .setDictionary(f"{project_root}/content/sentiment-dict.txt", ",", ReadAs.TEXT)
 
         pipeline = Pipeline().setStages([
             documentAssembler,

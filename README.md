@@ -1,9 +1,9 @@
 # stick
 
 **Stick** is a simple & complete batch processing pipeline. It fetches data from the
-best subreddits in the world and reports the ones which have the most (positive) attention.
+best subreddits in the world and reports the ones which have the most "positive" attention.
 
-This report can be used to make content to help creators about current/upcoming trends, which [Remini](https://apps.apple.com/us/app/remini-ai-photo-enhancer/id1470373330) and [Splice](https://apps.apple.com/mg/app/splice-video-editor-maker/id409838725) serve.
+This report and content can be used to make content to help creators about current/upcoming trends, which [Remini](https://apps.apple.com/us/app/remini-ai-photo-enhancer/id1470373330) and [Splice](https://apps.apple.com/mg/app/splice-video-editor-maker/id409838725) serve.
 
 
 <p align="center">
@@ -12,7 +12,9 @@ This report can be used to make content to help creators about current/upcoming 
 
 ## Design
 
-There will be a design image here.
+<p align="center">
+  <img src="content/design.jpg" title="The Design of Stick" width="80%" height="80%"/>
+</p>
 
 ## Installation For Ubuntu
 
@@ -59,7 +61,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 # Apply changes
 $ source ~/.bashrc
-
 ```
 
 ## Usage
@@ -133,10 +134,12 @@ There are 4 things you want to change here.
 1) **dags_folder** This will be the path of your dags folder in your repository.
 2) **executor** After the installation of PostgreSQL, we can change this to 'LocalExecutor'
 3) **load_examples** If you don't make this "False" there will be a lot of things on UI that might confuse you.
-4) **sql_alchemy_conn** This is the way we bridge PostgreSQL and Airflow. Depending on your configuration it will look something like "sql_alchemy_conn = postgresql+psycopg2://USER:PASSWORD@IP:PORT/DATABASE_NAME
-"
+4) **sql_alchemy_conn** This is the way we bridge PostgreSQL and Airflow. Depending on your configuration it will look something like "sql_alchemy_conn = postgresql+psycopg2://USER:PASSWORD@IP:PORT/DATABASE_NAME"
 
-## Current State
+After these steps, if you have an ImportError on one of your dags, you can add your repository path to the environment with [conda develop.](https://datacomy.com/python/anaconda/add_folder_to_path/)
+
+
+## Current State - Cost
 
 Stick is currently running on a GCP server with a Ubuntu 20.04 VM instance. This instance is a e2-standart-2, it has 2vCPU's and 8 GB's of memory. Daily cost is around $0.8.
 
@@ -148,7 +151,7 @@ Stick is currently running on a GCP server with a Ubuntu 20.04 VM instance. This
 - [ ] So far, we are just keeping logging in the machine. That won't cut it. Need GCP logs.
 - [ ] No error reporting - If possible, need to use sentry. As the data sinks become various, this will be an issue.
 - [x] Orchestration - Airflow can be used. Done on /development-airflow branch.
-- [ ] Airflow with proper setup. Local Executor & PostgreSQL.
+- [x] Airflow with proper setup. Local Executor & PostgreSQL.
 - [x] Sentiment dictionaries for SparkNLP.
 - [ ] Monitoring is done manually. Grafana can be setup on gcp.
 - [ ] Almost no scale at all. What if there was a huge data flow coming in from multiple sinks, which cannot be saved/stated in a single file? (We can use a Kafka container for this.) 

@@ -20,7 +20,7 @@ from datetime import date, datetime
 #import psycopg2
 import json
 
-project_root = f"{os.path.expanduser('~')}/repositories/stick"
+project_root = os.path.abspath(__file__ + "/../../..")
 
 # Logger
 logging.basicConfig(
@@ -33,9 +33,7 @@ logging.basicConfig(
                     )
 
 stick_logger = logging.getLogger(__name__)
-
-CURRENT_PATH = project_root
-CHROME_DRIVER_PATH = f"{CURRENT_PATH}/utils/chromedriver"
+CHROME_DRIVER_PATH = f"{project_root}/utils/chromedriver"
 ADBLOCK = f"{os.path.expanduser('~')}/.config/google-chrome/Default/Extensions/gighmmpiobklfepjocnamgkkbiglidom/"
 
 # TODO: READ FROM CONFIG FILE 
@@ -58,7 +56,7 @@ class RedditCrawler():
             # Data path to be saved!
             self.today_specific = date.today().strftime("%d_%m_%y")
             # Data path to be saved!
-            self.data_path = CURRENT_PATH + "/data/raw/" + self.today_specific + "_reddit_data.csv"
+            self.data_path = project_root + "/data/raw/" + self.today_specific + "_reddit_data.csv"
             self.content_dict = {}
             # Subreddits to check
             self.subreddits = ["memes", "gaming", "lol", "pics", "food", "funny", "Damnthatsinteresting", 
@@ -196,11 +194,11 @@ class RedditCrawler():
         driver.implicitly_wait(3)
         driver.close()
 
-        with open(f"{CURRENT_PATH}/data/comments/{self.today_specific}_reddit.json", "w+") as outfile:
+        with open(f"{project_root}/data/comments/{self.today_specific}_reddit.json", "w+") as outfile:
             json.dump(__subreddits_dict,outfile)
         
         stick_logger.info(f"Total comments looked up is : {__comment_counter}")
-        stick_logger.info(f"Saved all the valuable content to :{CURRENT_PATH}/data/comments/{self.today_specific}_reddit.json")
+        stick_logger.info(f"Saved all the valuable content to :{project_root}/data/comments/{self.today_specific}_reddit.json")
 
 # This is mainly for Airflow's PythonOperator.
 def prime():
