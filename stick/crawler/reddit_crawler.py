@@ -20,19 +20,21 @@ from datetime import date, datetime
 #import psycopg2
 import json
 
+project_root = "/home/sezai/repositories/stick"
+
 # Logger
 logging.basicConfig(
                     level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(message)s",
                     handlers=[
-                        logging.FileHandler(f"{os.getcwd()}/logs/{datetime.now()}-reddit_crawler.log"),
+                        logging.FileHandler(f"{project_root}/logs/{datetime.now()}-reddit_crawler.log"),
                         logging.StreamHandler(sys.stdout)
                         ]
                     )
 
 stick_logger = logging.getLogger(__name__)
 
-CURRENT_PATH = os.getcwd()
+CURRENT_PATH = project_root
 CHROME_DRIVER_PATH = f"{CURRENT_PATH}/utils/chromedriver"
 ADBLOCK = '/home/sezai/.config/google-chrome/Default/Extensions/gighmmpiobklfepjocnamgkkbiglidom/'
 
@@ -212,6 +214,9 @@ def prime():
     Crawler.get_best_comments(number_of_comments_to_be_saved = 8)
     stick_logger.info("Successfully fetched data!")
     stick_logger.info("Bye!")
+
+def dummy():
+    pass
 
 if __name__ == "__main__":
     prime()

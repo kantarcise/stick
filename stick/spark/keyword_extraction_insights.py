@@ -23,19 +23,22 @@ import os
 from datetime import date, datetime
 import logging
 
+project_root = "/home/sezai/repositories/stick"
+
+
 # Logger
 logging.basicConfig(
                     level=logging.INFO,
                     format="%(asctime)s [%(levelname)s] %(message)s",
                     handlers=[
-                        logging.FileHandler(f"{os.getcwd()}/logs/{datetime.now()}-keyword_extraction_insights.log"),
+                        logging.FileHandler(f"{project_root}/logs/{datetime.now()}-keyword_extraction_insights.log"),
                         logging.StreamHandler(sys.stdout)
                         ]
                     )
 
 stick_logger = logging.getLogger(__name__)
 
-CURRENT_PATH = os.getcwd()
+CURRENT_PATH = project_root
 today_specific = date.today().strftime("%d_%m_%y")
 
 class KeywordExtractionInsight():
