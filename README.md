@@ -141,7 +141,7 @@ After these steps, if you have an ImportError on one of your dags, you can add y
 
 ## Current State - Cost
 
-Stick is currently running on a GCP server with a Ubuntu 20.04 VM instance. This instance is a e2-standart-2, it has 2vCPU's and 8 GB's of memory. Daily cost is around $0.8.
+Stick is currently running on a GCP server with a Ubuntu 20.04 VM instance. This instance is a e2-standart-2, it has 2vCPU's and 8 GB's of memory. On average, daily cost is around $1.2.
 
 ## Work In Progress:
 
