@@ -5,7 +5,6 @@ best subreddits in the world and reports the ones which have the most "positive"
 
 This report and content can be used to make content to help creators about current/upcoming trends, which [Remini](https://apps.apple.com/us/app/remini-ai-photo-enhancer/id1470373330) and [Splice](https://apps.apple.com/mg/app/splice-video-editor-maker/id409838725) serve.
 
-
 <p align="center">
   <img src="content/stick.png" title="Fundemental of a Fire" width="30%" height="30%"/>
 </p>
@@ -15,6 +14,44 @@ This report and content can be used to make content to help creators about curre
 <p align="center">
   <img src="content/design.jpg" title="The Design of Stick" width="80%" height="80%"/>
 </p>
+
+## Results
+
+### Using Splice
+
+<p align="center">
+  <img src="made_with_stick/amazingAnimals01.gif" title="Featuring the Finest Content on Pets." width="50%" height="50%"/>
+</p>
+
+<p align="center">
+  <img src="made_with_stick/aroundTheWorld.gif" title="Most interesting things, around the world" width="50%" height="50%"/>
+</p>
+
+<p align="center">
+  <img src="made_with_stick/GlencoScotland.gif" title="Traveling, Documenting and Sharing!" width="50%" height="50%"/>
+</p>
+
+Special thanks to the people who made these possible with their content, like [botcraft_net](https://old.reddit.com/user/botcraft_net), [dnorbz](https://old.reddit.com/user/dnorbz), [yeezee93](https://old.reddit.com/user/yeezee93) and many more.
+
+Full version of all of these videos (and more) can be found in the [made_with_stick](https://github.com/kantarcise/stick/tree/main/made_with_stick) folder.
+
+### Using Remini
+
+All of the pictures below, are enhanced with Remini 🐱‍🏍
+
+<p align="center">
+  <img src="made_with_stick/remini01.JPG" title="Fundemental of a Fire" width="70%" height="70%"/>
+</p>
+
+<p align="center">
+  <img src="made_with_stick/remini02.JPG" title="Fundemental of a Fire" width="70%" height="70%"/>
+</p>
+
+<p align="center">
+  <img src="made_with_stick/remini05.JPG" title="Fundemental of a Fire" width="70%" height="70%"/>
+</p>
+
+
 
 ## Installation For Ubuntu
 
