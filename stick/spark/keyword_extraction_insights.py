@@ -49,7 +49,7 @@ class KeywordExtractionInsight():
             stick_logger.info(f"Apache Spark version: {self.spark.version}")
             self.input_json_path = f"{project_root}/data/comments/{today_specific}_reddit.json"
             self.output_csv_path = f"{project_root}/data/comments/{today_specific}_reddit_to_pipeline.csv"
-            self.results_csv_path = f"{project_root}/results/{today_specific}_results_reddit.csv"
+            self.results_csv_path = f"{project_root}/results/{today_specific}_results_reddit"
             stick_logger.info("All file paths are set.")
         except:
             stick_logger.exception("Could not initiate KeywordExtractionInsight object.")
