@@ -193,3 +193,4 @@ Stick is currently running on a GCP server with a Ubuntu 20.04 VM instance. This
 - [ ] Monitoring is done manually. Grafana can be setup on gcp.
 - [ ] Almost no scale at all. What if there was a huge data flow coming in from multiple sinks, which cannot be saved/stated in a single file? (We can use a Kafka container for this.) 
 - [ ] Model testing and quality assurrance ? - Need to setup a test folder that exactly does that.
+- [ ] For Config file, experiment with [Omegaconf](https://omegaconf.readthedocs.io/en/2.1_branch/index.html) and [Hydra](https://hydra.cc/docs/intro/) 
